@@ -83,7 +83,7 @@
         }
         .point-label { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: white; color: #667eea; border: 3px solid #667eea; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; }
         
-        .preview-frame { width: 100%; height: 600px; border: 4px solid #667eea; border-radius: 12px; background: white; overflow: auto; margin: 20px 0; }
+        .preview-frame { width: 100%; border: 4px solid #667eea; border-radius: 12px; background: white; overflow: hidden; margin: 20px 0; aspect-ratio: 16/9; }
         .code-block { background: #2d2d2d; color: #f8f8f2; padding: 25px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.95em; overflow-x: auto; margin: 20px 0; white-space: pre-wrap; word-wrap: break-word; }
         
         .upload-area { border: 4px dashed #ddd; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; margin: 25px 0; background: white; transition: all 0.3s; }
@@ -491,9 +491,13 @@
                         Загрузить свое изображение
                     </div>
                     <div style="color: #666; font-size: 1.05em;">
-                        Нажмите или перетащите файл сюда (JPG, PNG, до 5 МБ)
+                        Нажмите или перетащите файл сюда (JPG, PNG, GIF, WebP)
                     </div>
                     <input type="file" id="mapFile" accept="image/*" style="display: none;">
+                </div>
+                <div id="uploadedMapPreview" style="display:none; margin: 15px 0; padding: 15px; background: #f0f4ff; border: 2px solid #667eea; border-radius: 10px;">
+                    <div style="font-weight: bold; color: #667eea; margin-bottom: 10px;">✅ Изображение загружено:</div>
+                    <img id="uploadedMapImg" src="" style="max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: contain; display: block; margin: 0 auto;">
                 </div>
                 
                 <h3 style="margin: 30px 0 15px; font-size: 1.3em;">Предварительный просмотр карты:</h3>
@@ -538,32 +542,24 @@
                 <div class="section-title">👁️ Предварительный просмотр и публикация</div>
                 
                 <div class="alert">
-                    🚀 <strong>Готово к публикации!</strong> Посмотрите как будет выглядеть ваша игра 
-                    и получите код для встраивания в презентацию Genially
+                    🚀 <strong>Тест-драйв и публикация!</strong> Нажмите «Запустить игру» — прямо здесь можно поиграть и проверить всё как видят дети. Затем скопируйте код для Genially.
                 </div>
                 
-                <div style="margin-bottom: 25px;">
-                    <button class="btn btn-primary" id="previewBtn">👁️ Обновить превью</button>
-                    <button class="btn btn-success" id="publishBtn" style="background: linear-gradient(135deg, #f093fb, #f5576c);">📋 Копировать код</button>
+                <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                    <button class="btn btn-primary" id="previewBtn">▶️ Запустить игру</button>
+                    <button class="btn btn-success" id="publishBtn" style="background: linear-gradient(135deg, #f093fb, #f5576c);">📋 Копировать код для Genially</button>
+                    <span id="copySuccessMsg" style="display:none; color: #28a745; font-weight: bold; font-size: 1em;">✅ Код скопирован! Вставьте в HTML-элемент Genially (Ctrl+V)</span>
                 </div>
                 
-                <h3 style="margin-bottom: 15px; font-size: 1.3em;">Превью игры:</h3>
-                <div class="preview-frame" id="previewFrame">
-                    <div style="padding: 60px; text-align: center; color: #666;">
-                        <div style="font-size: 5em; margin-bottom: 25px;">🎮</div>
-                        <h2 style="font-size: 2em; margin-bottom: 15px;">Нажмите "Обновить превью"</h2>
-                        <p style="font-size: 1.2em;">Здесь будет отображаться ваша игра так, как её увидят дети</p>
-                    </div>
-                </div>
-                
-                <h3 style="margin: 30px 0 15px; font-size: 1.3em;">Код для вставки в Genially:</h3>
-                <div class="alert">
-                    ℹ️ <strong>Инструкция:</strong> Нажмите кнопку ниже, чтобы сгенерировать код для встраивания игры в Genially. Затем скопируйте код и вставьте его в элемент HTML в вашей презентации.
-                </div>
-                
-                <div class="code-block" id="iframeCode">Нажмите кнопку "Сгенерировать код для Genially" чтобы получить код для встраивания</div>
-                
-                <button class="btn btn-primary" id="copyBtn">📋 Копировать код в буфер обмена</button>
+                <iframe id="previewFrame"
+                    style="width:100%;aspect-ratio:16/9;border:4px solid #667eea;border-radius:12px;background:#f5f5f5;display:block;margin:0 0 25px 0;"
+                    sandbox="allow-scripts allow-same-origin"
+                    srcdoc="<div style='font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;height:100%;background:#f5f5f5;'><div style='text-align:center;color:#666;'><div style='font-size:4em;margin-bottom:15px;'>🎮</div><h2>Нажмите ▶️ Запустить игру</h2><p style='margin-top:8px;'>Здесь будет ваша игра — полностью интерактивная</p></div></div>"
+                ></iframe>
+
+                <!-- Скрытое поле для хранения кода -->
+                <div id="iframeCode" style="display:none;"></div>
+                <button id="copyBtn" style="display:none;"></button>
             </div>
         </div>
     </div>
@@ -715,16 +711,35 @@
             var file = e.target.files[0];
             if (!file) return;
             
+            if (file.size > 10 * 1024 * 1024) {
+                alert('❌ Файл слишком большой. Максимальный размер — 10 МБ.');
+                return;
+            }
+            
             var reader = new FileReader();
             reader.onload = function(event) {
                 gameData.customMapUrl = event.target.result;
                 gameData.selectedMap = 'custom';
                 
                 mapCards.forEach(function(c) { c.classList.remove('selected'); });
-                document.querySelector('[data-map="custom"]').classList.add('selected');
                 
                 updateMapTheme();
                 saveToLocalStorage();
+                
+                // Показываем превью загруженного изображения
+                var previewBlock = document.getElementById('uploadedMapPreview');
+                var previewImg = document.getElementById('uploadedMapImg');
+                if (previewBlock && previewImg) {
+                    previewImg.src = event.target.result;
+                    previewBlock.style.display = 'block';
+                }
+                
+                // Обновляем текст области загрузки
+                var uploadIcon = document.querySelector('#uploadArea .upload-icon');
+                if (uploadIcon) uploadIcon.textContent = '✅';
+            };
+            reader.onerror = function() {
+                alert('❌ Ошибка при чтении файла. Попробуйте другой файл.');
             };
             reader.readAsDataURL(file);
         });
@@ -1098,52 +1113,37 @@
                 
                 renderQuestions();
                 updateMapTheme();
+                
+                // Восстанавливаем превью загруженной карты
+                if (gameData.selectedMap === 'custom' && gameData.customMapUrl) {
+                    var previewBlock = document.getElementById('uploadedMapPreview');
+                    var previewImg = document.getElementById('uploadedMapImg');
+                    if (previewBlock && previewImg && gameData.customMapUrl.startsWith('data:')) {
+                        previewImg.src = gameData.customMapUrl;
+                        previewBlock.style.display = 'block';
+                    }
+                }
             }
         }
         
         // Инициализация
         loadFromLocalStorage();
         
-        // Функция превью
+        // Функция превью — запускает живую игру в iframe
         document.getElementById('previewBtn').addEventListener('click', function() {
             if (gameData.questions.length === 0) {
                 alert('❌ Сначала добавьте хотя бы один вопрос!');
                 return;
             }
             
-            var themes = [
-                {id: 'pirates', name: 'Пираты', icon: '🏴‍☠️', color: '#8b4513'},
-                {id: 'jungle', name: 'Джунгли', icon: '🌴', color: '#2d5016'},
-                {id: 'underwater', name: 'Подводный мир', icon: '🐠', color: '#006994'},
-                {id: 'space', name: 'Космос', icon: '🚀', color: '#0f3460'},
-                {id: 'city', name: 'Город', icon: '🏙️', color: '#424242'}
-            ];
+            var iframe = document.getElementById('previewFrame');
+            var gameHTML = generateGameHTML();
             
-            var theme = themes.find(function(t) { return t.id === gameData.theme; });
-            var previewFrame = document.getElementById('previewFrame');
+            // Вставляем полную игру в iframe через srcdoc
+            iframe.srcdoc = gameHTML;
             
-            var html = '<div style="padding: 40px; text-align: center; background: linear-gradient(135deg, ' + theme.color + ', #f0f0f0); min-height: 100%;">';
-            html += '<div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">';
-            html += '<h1 style="color: ' + theme.color + '; font-size: 2.5em; margin-bottom: 20px;">' + theme.icon + ' ' + (gameData.title || 'Охота за сокровищами') + '</h1>';
-            html += '<div style="text-align: left; margin-bottom: 30px; font-size: 1.1em;">';
-            html += '<p style="margin-bottom: 10px;"><strong>🎨 Тема:</strong> ' + theme.name + '</p>';
-            html += '<p style="margin-bottom: 10px;"><strong>❓ Вопросов:</strong> ' + gameData.questions.length + '</p>';
-            html += '<p style="margin-bottom: 10px;"><strong>⭐ Баллов за вопрос:</strong> ' + gameData.points + '</p>';
-            html += '<p style="margin-bottom: 10px;"><strong>💡 Подсказок:</strong> ' + gameData.hints + '</p>';
-            html += '<p style="margin-bottom: 10px;"><strong>🏆 Награда:</strong> ' + gameData.reward + '</p>';
-            html += '</div>';
-            html += '<button style="padding: 20px 60px; font-size: 1.3em; background: ' + theme.color + '; color: white; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">🎮 Начать игру</button>';
-            html += '<div style="margin-top: 30px; padding: 20px; background: #f9f9f9; border-radius: 10px; text-align: left;">';
-            html += '<h3 style="margin-bottom: 15px; color: #333;">📋 Примеры вопросов:</h3>';
-            
-            gameData.questions.slice(0, 3).forEach(function(q, i) {
-                html += '<div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border-left: 3px solid ' + theme.color + ';">';
-                html += '<strong>' + (i + 1) + '.</strong> ' + (q.text || 'Вопрос без текста') + '</div>';
-            });
-            
-            html += '</div></div></div>';
-            
-            previewFrame.innerHTML = html;
+            // Прокручиваем к iframe
+            iframe.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
         // Генерация кода для Genially
 
@@ -1237,21 +1237,7 @@
             return html;
         }
 
-        // Копирование кода
-        document.getElementById('copyBtn').addEventListener('click', function() {
-            var code = document.getElementById('iframeCode').textContent;
-            
-            if (code.indexOf('Нажмите') !== -1) {
-                alert('❌ Сначала нажмите "Сгенерировать код для Genially"');
-                return;
-            }
-            
-            navigator.clipboard.writeText(code).then(function() {
-                alert('✅ Код скопирован в буфер обмена! Теперь вставьте его в элемент HTML в Genially.');
-            }).catch(function() {
-                alert('❌ Не удалось скопировать. Попробуйте выделить текст и скопировать вручную (Ctrl+C).');
-            });
-        });
+        // copyBtn скрыт — логика перенесена в publishBtn
         
         // ========== НОВЫЕ ФУНКЦИИ ==========
         
@@ -1451,15 +1437,37 @@
                 return;
             }
             
-            // Генерируем код и копируем в буфер обмена
+            var btn = this;
+            var successMsg = document.getElementById('copySuccessMsg');
+            
             var gameHTML = generateGameHTML();
             var iframeCode = '<iframe srcdoc="' + gameHTML.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" width="100%" style="border:none;border-radius:10px;aspect-ratio:16/9;" allowfullscreen></iframe>';
             document.getElementById('iframeCode').textContent = iframeCode;
             
+            function onCopied() {
+                btn.textContent = '✅ Готово! Код скопирован';
+                btn.style.background = 'linear-gradient(135deg, #56ab2f, #a8e063)';
+                btn.disabled = true;
+                if (successMsg) successMsg.style.display = 'inline';
+                setTimeout(function() {
+                    btn.textContent = '📋 Копировать код для Genially';
+                    btn.style.background = 'linear-gradient(135deg, #f093fb, #f5576c)';
+                    btn.disabled = false;
+                    if (successMsg) successMsg.style.display = 'none';
+                }, 3500);
+            }
+            
             navigator.clipboard.writeText(iframeCode).then(function() {
-                alert('✅ Код скопирован в буфер обмена!\n\nВставьте его в элемент HTML в Genially.');
+                onCopied();
             }).catch(function() {
-                alert('✅ Код сгенерирован!\n\nСкопируйте его вручную из поля ниже.');
+                var ta = document.createElement('textarea');
+                ta.value = iframeCode;
+                ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
+                document.body.appendChild(ta);
+                ta.focus(); ta.select();
+                try { document.execCommand('copy'); onCopied(); }
+                catch(e) { alert('❌ Не удалось скопировать автоматически. Нажмите Ctrl+C.'); }
+                document.body.removeChild(ta);
             });
         });
         
